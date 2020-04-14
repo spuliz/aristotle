@@ -1,0 +1,45 @@
+    {% extends "layout.html" %}
+    
+    {% block content %}
+    <h1>Flagged Urls</h1>
+
+    <!-- <h3>Real Time</h3> -->
+
+    <div>
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <!-- <th scope="col">Flag ID</th> -->
+                <th scope="col">URL</th>
+                <th scope="col">Flags</th>
+                <!-- <th scope="col">Submission Date</th> -->
+                <!-- <th scope="col">Count</th> -->
+                <th scope="col">More Info</th>
+            </tr>
+            </thead>
+            <tbody>
+            
+            <!-- Construct the rest of courses here -->
+            {% for data in data %}
+            {% for count in count %}
+            <tr>
+                <!-- <td scope='row'>{{ data["flag_id"] }}</td> -->
+                <!-- <td>{{ data["url"] }}</td> -->
+                <!-- <td>{{ data["topic"] }}</td> -->
+                <!-- <td>{{ data["submission_time"] }}</td> -->
+                <td>{{ count["_id"] }}</td>
+                <td>{{ count["count"] }}</td>
+                <td>
+                    <button onclick="window.location.href = '{{ count["_id"] }}' ";>More Info</button>
+                </td>
+                
+            </tr>
+            {% endfor %}
+
+            {% endfor %}
+
+            </tbody>
+        </table>
+    </div>
+
+{% endblock %}

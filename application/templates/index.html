@@ -1,0 +1,43 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <h1> Welcome to Project Aristotle</h1>
+            
+            {% if user_login %}
+            <div class="container">
+                <h3>Flag a URL</h3>
+            </div>
+
+            <div class="container">
+                    <form name="flag" action="" method="post" novalidate>
+                       <fieldset class="form-group">
+                           <!-- <legend>{{title}}</legend>      -->
+                           {{ form.hidden_tag() }}       
+                               <p> {{ form.url.label }}</br>
+                                   {{ form.url }}
+                                   {% for error in form.url.errors %}
+                                   <span class="error-message">{{ error }}</span>
+                                   {% endfor %}
+                               </p>
+
+                               <p> {{ form.topic.label }}</br>
+                                    {{ form.topic }}
+                                    {% for error in form.topic.errors %}
+                                    <span class="error-message">{{ error }}</span>
+                                    {% endfor %}
+                                </p>
+
+                                <p> 
+                                    {{ form.submit() }}
+                                </p>
+                           
+            
+            {% else %}
+            <p>Already registered? <a href="{{url_for('login')}}">Login</a></p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+
