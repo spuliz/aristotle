@@ -14,7 +14,7 @@ Web app developed with [Flask](http://flask.pocoo.org/) framework.
 | ------------- | ------------- | ------------- |
 | Antinucci, Giulio | giulio.antinucci@gmail.com ||
 | Caputo, Luigi | luigi.caputo89@gmail.com ||
-| Maiolo, gianluca | gianluca.maiolo92@gmail.com | Product owner |
+| Maiolo, Gianluca | gianluca.maiolo92@gmail.com | Product owner |
 | Novelli, Pietro | pnovelli88@gmail.com ||
 | Palumbo, Stephanie | info@stephanieapalumbo.com | Marketing - Brand - Design |
 | Pulizzi, Saverio | saverio.pulizzi91@gmail.com | Developer |
