@@ -93,4 +93,6 @@ def create():
     news.save()
     flash("URL successfully flagged!", "success")
 
-    return jsonify({'task': news}), 201
+    count = News.objects().filter(url=url).count()
+
+    return jsonify({'news': news, 'count': count}), 201
