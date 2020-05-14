@@ -1,7 +1,7 @@
 from application import app, db
 from flask import render_template, redirect, flash, url_for, request, jsonify
 from application.models import User, News, Report
-from application.forms import LoginForm, RegisterForm, FlagNews
+from application.forms import LoginForm, RegisterForm, FlagNewsForm
 from datetime import datetime
 
 
@@ -10,13 +10,15 @@ from datetime import datetime
 @app.route("/index", methods=['GET', 'POST'])
 @app.route("/home", methods=['GET', 'POST'])
 def index():
-    form = FlagNews()
+    form = FlagNewsForm()
     if form.validate_on_submit():
         url = form.url.data
-        topic = form.topic.data
+        email = form.email.data
         submission_time = form.submission_time.data
 
-        news = News(topic=topic, submission_time=submission_time, url=url)
+        _report = Report(email=email)
+
+        news = News(submission_time=submission_time, url=url, report=_report)
         news.save()
         flash("URL successfully flagged!", "success")
         return redirect(url_for('dashboard'))

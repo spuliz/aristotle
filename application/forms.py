@@ -10,10 +10,12 @@ class LoginForm(FlaskForm):
     remember_me = BooleanField("Remember Me")
     submit = SubmitField("Login")
 
+
 class RegisterForm(FlaskForm):
     email = StringField("Email", validators=[DataRequired(), Email()])
     password = PasswordField("Password", validators=[DataRequired(), Length(min=6, max=15)])
-    password_confirm = PasswordField("Confirm Password", validators=[DataRequired(), Length(min=6, max=15), EqualTo('password')])
+    password_confirm = PasswordField("Confirm Password",
+                                     validators=[DataRequired(), Length(min=6, max=15), EqualTo('password')])
     user_name = StringField("User Name", validators=[DataRequired(), Length(min=6, max=30)])
     submit = SubmitField("Register Now")
 
@@ -22,11 +24,9 @@ class RegisterForm(FlaskForm):
         if user:
             raise ValidationError("Email is already in use, pick another one.")
 
-class FlagNews(FlaskForm):
-    url =  StringField("Url", validators=[DataRequired(), Length(min=5, max=5000)])
-    topic =  StringField("Topic", validators=[DataRequired()])
+
+class FlagNewsForm(FlaskForm):
+    url = StringField("Url", validators=[DataRequired(), Length(min=5, max=5000)])
+    email = StringField("Email", validators=[DataRequired(), Email()])
     submission_time = DateTimeField("Submission Time")
     submit = SubmitField("Flag Url")
-
-    # count = StringField()
-

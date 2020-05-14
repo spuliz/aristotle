@@ -25,7 +25,7 @@ class Report(db.EmbeddedDocument):
 class News(db.Document):
     url = db.StringField(max_length=500, required=True)
     topic = db.StringField(max_length=255, required=False)
-    report = db.EmbeddedDocumentField(Report)
+    report = db.EmbeddedDocumentField(Report, required=True)
     submission_time = db.DateTimeField(default=datetime.datetime.utcnow)
 
 
