@@ -1,6 +1,6 @@
 from application import app, db
 from flask import render_template, redirect, flash, url_for, request, jsonify
-from application.models import User, News
+from application.models import User, News, Report
 from application.forms import LoginForm, RegisterForm, FlagNews
 from datetime import datetime
 
@@ -12,14 +12,11 @@ from datetime import datetime
 def index():
     form = FlagNews()
     if form.validate_on_submit():
-        flag_id = News.objects.count()
-        flag_id += 1
-
         url = form.url.data
         topic = form.topic.data
         submission_time = form.submission_time.data
 
-        news = News(flag_id=flag_id, topic=topic, submission_time=submission_time, url=url)
+        news = News(topic=topic, submission_time=submission_time, url=url)
         news.save()
         flash("URL successfully flagged!", "success")
         return redirect(url_for('dashboard'))
@@ -80,19 +77,28 @@ def register():
     return render_template("register.html", title="Register", form=form, register=True)
 
 
-@app.route('/magic', methods=['POST'])
-def create():
-    flag_id = News.objects.count()
-    flag_id += 1
+def isBlank(string):
+    return not (string and string.strip())
 
+
+def isNotBlank(string):
+    return bool(string and string.strip())
+
+
+@app.route('/save', methods=['POST'])
+def create():
+    from_number = request.json.get('from_number', '')
     url = request.json.get('url', '')
     topic = request.json.get('topic', '')
     submission_time = request.json.get('submission_time', datetime.now())
 
-    news = News(flag_id=flag_id, topic=topic, submission_time=submission_time, url=url)
+    _report = Report(number=from_number)
+    news = News(topic=topic, submission_time=submission_time, url=url,
+                report=_report)
     news.save()
     flash("URL successfully flagged!", "success")
 
-    count = News.objects().filter(url=url).count()
+    # syntax mongoengine meaning report object has number attr not equals given number
+    count = News.objects(report__number__ne=from_number, url=url).count()
 
     return jsonify({'news': news, 'count': count}), 201
