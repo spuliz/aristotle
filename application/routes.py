@@ -5,6 +5,7 @@ from application.forms import LoginForm, RegisterForm, FlagNewsForm
 from datetime import datetime
 
 
+
 # decorators allow to load function based on webbrowser url mathching those strings
 @app.route("/", methods=['GET', 'POST'])
 @app.route("/index", methods=['GET', 'POST'])
