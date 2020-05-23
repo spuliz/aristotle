@@ -5,7 +5,6 @@ from application.forms import LoginForm, RegisterForm, FlagNewsForm
 from datetime import datetime
 
 
-
 # decorators allow to load function based on webbrowser url mathching those strings
 @app.route("/", methods=['GET', 'POST'])
 @app.route("/index", methods=['GET', 'POST'])
@@ -101,7 +100,17 @@ def create():
     news.save()
     flash("URL successfully flagged!", "success")
 
-    # syntax mongoengine meaning report object has number attr not equals given number
-    count = News.objects(report__number__ne=from_number, url=url).count()
+    pipeline = [
+        {"$unwind": "$report"},
+        {"$match": {
+            "url": url,
+            "report.number": {"$ne": from_number}
+        }}, {"$group": {"_id": "$report.number", "count": {"$sum": 1}}},
+    ]
 
-    return jsonify({'news': news, 'count': count}), 201
+    result = list(News.objects().aggregate(pipeline))
+
+    # cursorlist = [c for c in result]
+    # print(cursorlist)
+
+    return jsonify({'news': news, 'count': len(result)}), 201
