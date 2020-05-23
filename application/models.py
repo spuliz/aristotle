@@ -17,15 +17,11 @@ class User(db.Document):
         return check_password_hash(self.password, password)
 
 
-class Report(db.EmbeddedDocument):
-    email = db.EmailField(max_length=100, required=False)
-    number = db.StringField(max_length=255, required=False)
-
-
 class News(db.Document):
     url = db.StringField(max_length=500, required=True)
     topic = db.StringField(max_length=255, required=False)
-    report = db.EmbeddedDocumentField(Report, required=True)
+    email = db.EmailField(max_length=100, required=False)
+    number = db.StringField(max_length=255, required=False)
     submission_time = db.DateTimeField(default=datetime.datetime.utcnow)
 
 

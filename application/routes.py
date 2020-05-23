@@ -1,6 +1,6 @@
 from application import app, db
 from flask import render_template, redirect, flash, url_for, request, jsonify
-from application.models import User, News, Report
+from application.models import User, News
 from application.forms import LoginForm, RegisterForm, FlagNewsForm
 from datetime import datetime
 
@@ -16,9 +16,7 @@ def index():
         email = form.email.data
         submission_time = form.submission_time.data
 
-        _report = Report(email=email)
-
-        news = News(submission_time=submission_time, url=url, report=_report)
+        news = News(submission_time=submission_time, url=url, email=email)
         news.save()
         flash("URL successfully flagged!", "success")
         return redirect(url_for('dashboard'))
@@ -94,18 +92,16 @@ def create():
     topic = request.json.get('topic', '')
     submission_time = request.json.get('submission_time', datetime.now())
 
-    _report = Report(number=from_number)
     news = News(topic=topic, submission_time=submission_time, url=url,
-                report=_report)
+                number=from_number)
     news.save()
     flash("URL successfully flagged!", "success")
 
     pipeline = [
-        {"$unwind": "$report"},
         {"$match": {
             "url": url,
-            "report.number": {"$ne": from_number}
-        }}, {"$group": {"_id": "$report.number", "count": {"$sum": 1}}},
+            "number": {"$ne": from_number}
+        }}, {"$group": {"_id": "$number", "count": {"$sum": 1}}},
     ]
 
     result = list(News.objects().aggregate(pipeline))
@@ -114,3 +110,21 @@ def create():
     # print(cursorlist)
 
     return jsonify({'news': news, 'count': len(result)}), 201
+
+
+@app.route('/query', methods=['POST'])
+def query():
+    limit = request.json.get('top', 3)
+
+    pipeline = [
+        {"$group": {"_id": {"number": "$number", "url": "$url"}}},
+        {"$group": {"_id": "$_id.url", "count": {"$sum": 1}}},
+        {"$sort": {"count": -1}},
+        {"$limit": limit}
+    ]
+
+    result = list(News.objects().aggregate(pipeline))
+
+    cursorlist = [c for c in result]
+
+    return jsonify(cursorlist), 200
