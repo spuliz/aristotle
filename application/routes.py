@@ -1,7 +1,11 @@
 from application import app, db
 from flask import render_template, redirect, flash, url_for, request, jsonify
 from application.models import User, News
+<<<<<<< HEAD
 from application.forms import LoginForm, RegisterForm, FlagNewsForm
+=======
+from application.forms import LoginForm, RegisterForm, FlagNews
+>>>>>>> 0efd0a6a900530978ab0358becc62554557c2c61
 from datetime import datetime
 
 
@@ -12,11 +16,21 @@ from datetime import datetime
 def index():
     form = FlagNewsForm()
     if form.validate_on_submit():
+<<<<<<< HEAD
+=======
+        flag_id = News.objects.count()
+        flag_id += 1
+
+>>>>>>> 0efd0a6a900530978ab0358becc62554557c2c61
         url = form.url.data
         email = form.email.data
         submission_time = form.submission_time.data
 
+<<<<<<< HEAD
         news = News(submission_time=submission_time, url=url, email=email)
+=======
+        news = News(flag_id=flag_id, topic=topic, submission_time=submission_time, url=url)
+>>>>>>> 0efd0a6a900530978ab0358becc62554557c2c61
         news.save()
         flash("URL successfully flagged!", "success")
         return redirect(url_for('dashboard'))
@@ -77,6 +91,7 @@ def register():
     return render_template("register.html", title="Register", form=form, register=True)
 
 
+<<<<<<< HEAD
 def isBlank(string):
     return not (string and string.strip())
 
@@ -88,10 +103,18 @@ def isNotBlank(string):
 @app.route('/save', methods=['POST'])
 def create():
     from_number = request.json.get('from_number', '')
+=======
+@app.route('/magic', methods=['POST'])
+def create():
+    flag_id = News.objects.count()
+    flag_id += 1
+
+>>>>>>> 0efd0a6a900530978ab0358becc62554557c2c61
     url = request.json.get('url', '')
     topic = request.json.get('topic', '')
     submission_time = request.json.get('submission_time', datetime.now())
 
+<<<<<<< HEAD
     news = News(topic=topic, submission_time=submission_time, url=url,
                 number=from_number)
     news.save()
@@ -128,3 +151,12 @@ def query():
     cursorlist = [c for c in result]
 
     return jsonify(cursorlist), 200
+=======
+    news = News(flag_id=flag_id, topic=topic, submission_time=submission_time, url=url)
+    news.save()
+    flash("URL successfully flagged!", "success")
+
+    count = News.objects().filter(url=url).count()
+
+    return jsonify({'news': news, 'count': count}), 201
+>>>>>>> 0efd0a6a900530978ab0358becc62554557c2c61
