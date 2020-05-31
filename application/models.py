@@ -25,6 +25,6 @@ class News(db.Document):
     submission_time = db.DateTimeField(default=datetime.datetime.utcnow)
 
 
-class NewsCount(db.Document):
-    url = db.StringField(max_length=500, required=True)
-    count = db.IntField()
+class Language(db.Document):
+    _id = db.StringField(max_length=255, required=False)
+    language = db.StringField(max_length=255, required=False)
