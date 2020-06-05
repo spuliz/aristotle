@@ -141,13 +141,13 @@ def get_language():
         variable = Language.objects.get(_id=number)
         result = variable.language
     except Language.DoesNotExist:
-        result = "en"
+        result = "english"
     return jsonify({'language': result}), 200
 
 
 @app.route('/language', methods=['POST'])
 def save_language():
-    language = request.json.get('language', 'en')
+    language = request.json.get('language', '')
     number = request.json.get('number', '')
 
     # _id field is indexed primary key represented by number, saving and update  is automatic by number
