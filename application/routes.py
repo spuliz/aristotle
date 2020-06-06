@@ -165,6 +165,7 @@ def save_language():
 
 # api-endpoint
 URL = "https://content-factchecktools.googleapis.com/v1alpha1/claims:search"
+API_KEY = "hi"
 
 
 @app.route('/search', methods=['GET'])
