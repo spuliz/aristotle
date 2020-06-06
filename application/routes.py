@@ -3,6 +3,7 @@ from flask import render_template, redirect, flash, url_for, request, jsonify
 from application.models import News, Language
 from application.forms import LoginForm, RegisterForm, FlagNewsForm
 from datetime import datetime
+import requests
 
 
 # decorators allow to load function based on webbrowser url mathching those strings
@@ -75,6 +76,10 @@ from datetime import datetime
 #         return redirect(url_for('index'))
 #
 #     return render_template("register.html", title="Register", form=form, register=True)
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return redirect("https://www.twidia.org/", code=302)
 
 
 def isBlank(string):
@@ -156,3 +161,22 @@ def save_language():
     flash("Language successfully saved", "success")
 
     return jsonify({'language': language}), 200
+
+
+# api-endpoint
+URL = "https://content-factchecktools.googleapis.com/v1alpha1/claims:search"
+
+
+@app.route('/search', methods=['GET'])
+def search():
+    # data to be sent to api
+    data = {'key': API_KEY,
+            'query': "trump"}
+    # sending get request and saving the response as response object
+    r = requests.get(url=URL, params=data)
+    data = r.json()
+
+    for i in data["claims"]:
+        print(i["text"])
+
+    return jsonify(data), 200
