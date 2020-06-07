@@ -170,14 +170,19 @@ API_KEY = ""
 
 @app.route('/search', methods=['GET'])
 def search():
-    # data to be sent to api
     if 'query' in request.args:
         query = request.args['query']
     else:
         return jsonify({}), 400
 
+    if 'language' in request.args:
+        language = request.args['language']
+    else:
+        language = 'en-US'
+
     data = {'key': API_KEY,
-            'query': query}
+            'query': query,
+            'languageCode': language}
     # sending get request and saving the response as response object
     r = requests.get(url=URL, params=data)
     data = r.json()
