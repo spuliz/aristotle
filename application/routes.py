@@ -182,4 +182,4 @@ def search():
     r = requests.get(url=URL, params=data)
     data = r.json()
 
-    return jsonify(data), 200
+    return jsonify(data), r.status_code
