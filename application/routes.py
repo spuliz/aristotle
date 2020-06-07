@@ -165,19 +165,21 @@ def save_language():
 
 # api-endpoint
 URL = "https://content-factchecktools.googleapis.com/v1alpha1/claims:search"
-API_KEY = "hi"
+API_KEY = ""
 
 
 @app.route('/search', methods=['GET'])
 def search():
     # data to be sent to api
+    if 'query' in request.args:
+        query = request.args['query']
+    else:
+        return jsonify({}), 400
+
     data = {'key': API_KEY,
-            'query': "trump"}
+            'query': query}
     # sending get request and saving the response as response object
     r = requests.get(url=URL, params=data)
     data = r.json()
-
-    for i in data["claims"]:
-        print(i["text"])
 
     return jsonify(data), 200
