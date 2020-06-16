@@ -146,7 +146,10 @@ def get_language():
         variable = Language.objects.get(_id=number)
         result = variable.language
     except Language.DoesNotExist:
-        result = "english"
+        if (number)[0:3] == "+39":
+           result = "italiano" 
+        else:     
+            result = "english"
     return jsonify({'language': result}), 200
 
 
@@ -165,7 +168,7 @@ def save_language():
 
 # api-endpoint
 URL = "https://content-factchecktools.googleapis.com/v1alpha1/claims:search"
-API_KEY = ""
+API_KEY = "AIzaSyDnmB4cd6d6f_tgoSEqb1qOlnQ0YJAH02M"
 
 
 @app.route('/search', methods=['GET'])
@@ -182,9 +185,10 @@ def search():
 
     data = {'key': API_KEY,
             'query': query,
-            'languageCode': language}
+            'languageCode': language,
+            }
     # sending get request and saving the response as response object
     r = requests.get(url=URL, params=data)
     data = r.json()
-
-    return jsonify(data), r.status_code
+    # data = jsonify(data) 
+    return data, r.status_code
