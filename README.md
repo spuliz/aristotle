@@ -8,6 +8,11 @@ Web app developed with [Flask](http://flask.pocoo.org/) framework.
 
 - Step 2: Go to this app's directory and run `python3 -m flask run`
 
+```
+flask run -h localhost -p 5000
+```
+
+
 ## Team
 
 | Name          | Email | Role |
