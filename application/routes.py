@@ -1,81 +1,8 @@
-from application import app, db
+from application import app, constants
 from flask import render_template, redirect, flash, url_for, request, jsonify
 from application.models import News, Language
-from application.forms import LoginForm, RegisterForm, FlagNewsForm
 from datetime import datetime
 import requests
-
-
-# decorators allow to load function based on webbrowser url mathching those strings
-# @app.route("/", methods=['GET', 'POST'])
-# @app.route("/index", methods=['GET', 'POST'])
-# @app.route("/home", methods=['GET', 'POST'])
-# def index():
-#     form = FlagNewsForm()
-#     if form.validate_on_submit():
-#         url = form.url.data
-#         email = form.email.data
-#         submission_time = form.submission_time.data
-#
-#         news = News(submission_time=submission_time, url=url, email=email)
-#         news.save()
-#         flash("URL successfully flagged!", "success")
-#         return redirect(url_for('dashboard'))
-#     return render_template("index.html", index=True, user_login=True, form=form)
-
-
-# @app.route("/login", methods=['GET', 'POST'])
-# def login():
-#     form = LoginForm()
-#     if form.validate_on_submit():  # if it does not return error
-#         email = form.email.data
-#         password = form.password.data
-#
-#         # check if email and password are in db
-#         user = User.objects(email=email).first()
-#         if user and user.get_password(password):
-#             flash(f"{user.user_name}, you are successfully logged in!", "success")
-#             return redirect("/index")  # redirect user to homepage
-#         else:
-#             flash("Sorry, something went wrong.", "danger")
-#     return render_template("login.html", title="Login", form=form, login=True)
-
-
-# @app.route("/dashboard", methods=['GET', 'POST'])
-# def dashboard():
-#     news = News.objects.order_by("-submission_time")
-#     count = News.objects.aggregate([{'$group': {
-#         '_id': "$url",
-#         'count': {'$sum': 1}
-#     }
-#     },
-#         {
-#             '$sort': {"count": -1}
-#         }
-#     ]
-#     )
-#
-#     return render_template("dashboard.html", dashboard=True, data=news, count=count)
-
-
-# @app.route("/register", methods=['GET', 'POST'])
-# def register():
-#     form = RegisterForm()
-#     if form.validate_on_submit():
-#         user_id = User.objects.count()
-#         user_id += 1  # add a new ID
-#
-#         email = form.email.data
-#         password = form.password.data
-#         user_name = form.user_name.data
-#
-#         user = User(user_id=user_id, email=email, user_name=user_name)
-#         user.set_password(password)
-#         user.save()
-#         flash("You are successfully registered!", "success")
-#         return redirect(url_for('index'))
-#
-#     return render_template("register.html", title="Register", form=form, register=True)
 
 @app.errorhandler(404)
 def page_not_found(e):
@@ -85,9 +12,8 @@ def page_not_found(e):
 def isBlank(string):
     return not (string and string.strip())
 
-
 def isNotBlank(string):
-    return bool(string and string.strip())
+    return bool(string and string.strip()) 
 
 
 @app.route('/url', methods=['POST'])
@@ -166,11 +92,6 @@ def save_language():
     return jsonify({'language': language}), 200
 
 
-# api-endpoint
-URL = "https://content-factchecktools.googleapis.com/v1alpha1/claims:search"
-API_KEY = "AIzaSyDnmB4cd6d6f_tgoSEqb1qOlnQ0YJAH02M"
-
-
 @app.route('/search', methods=['GET'])
 def search():
     if 'query' in request.args:
@@ -183,12 +104,17 @@ def search():
     else:
         language = 'en-US'
 
-    data = {'key': API_KEY,
+    data = {'key': constants.GOOGLE_API_URL_API_KEY,
             'query': query,
             'languageCode': language,
             }
     # sending get request and saving the response as response object
-    r = requests.get(url=URL, params=data)
+    r = requests.get(url=constants.GOOGLE_API_BASE_URL, params=data)
     data = r.json()
     # data = jsonify(data) 
     return data, r.status_code
+
+
+@app.route('/health', methods=['GET'])
+def health():
+    return jsonify({}), 200
